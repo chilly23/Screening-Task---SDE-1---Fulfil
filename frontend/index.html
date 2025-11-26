@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Importer — Monochrome</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --panel:#ffffff;
+    --ink:#0b0b0b;
+    --muted:#6b6b6b;
+    --glass: rgba(11,11,11,0.06);
+    --accent:#000000;
+    --radius:12px;
+    --shadow: 0 6px 20px rgba(11,11,11,0.06);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    background:linear-gradient(180deg,#fafafa 0%, #ffffff 100%);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:28px;
+  }
+
+  .container{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: 420px 1fr;
+    gap:28px;
+    align-items:start;
+  }
+
+  /* Left panel */
+  .card{
+    background:var(--panel);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px;
+    border:1px solid var(--glass);
+  }
+  h1{
+    margin:0 0 8px 0;
+    font-size:20px;
+    letter-spacing:-0.2px;
+  }
+  p.lead{margin:0 0 18px 0;color:var(--muted);font-size:13px}
+
+  .file-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  input[type=file]{display:block}
+  .btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+  }
+  .btn.ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--glass);
+  }
+
+  .progress{
+    margin-top:12px;
+    height:12px;
+    background:#f2f2f2;
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .progress > i{
+    display:block;
+    height:100%;
+    width:0%;
+    background:var(--accent);
+    transition:width 260ms linear;
+  }
+
+  .meta{font-size:12px;color:var(--muted);margin-top:8px}
+
+  /* Right area */
+  .grid{
+    display:grid;
+    grid-template-rows:auto auto;
+    gap:18px;
+  }
+  .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  thead th{
+    text-align:left;
+    padding:10px 12px;
+    color:var(--muted);
+    font-weight:600;
+    font-size:12px;
+    border-bottom:1px solid #f0f0f0;
+  }
+  tbody td{
+    padding:10px 12px;
+    border-bottom:1px solid #fafafa;
+  }
+
+  .status-pill{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:12px;
+    background:#f5f5f5;
+    color:var(--muted);
+  }
+
+  /* compact footer */
+  footer{margin-top:30px;color:var(--muted);font-size:12px;text-align:center}
+
+  /* responsive */
+  @media (max-width:880px){
+    .container{grid-template-columns:1fr; padding:18px}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left: controls -->
+    <aside class="card" aria-labelledby="title">
+      <h1 id="title">CSV Importer</h1>
+      <p class="lead">Upload SKU CSV. The worker runs in the background and reports progress. This is a scoped demo build for a coding assessment.</p>
+
+      <div>
+        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px">Select CSV</label>
+        <div class="file-row">
+          <input id="file" type="file" accept=".csv" />
+          <button id="uploadBtn" class="btn">Upload</button>
+        </div>
+
+        <div class="progress" aria-hidden="true" style="margin-top:16px">
+          <i id="bar" style="width:0%"></i>
+        </div>
+        <div class="meta" id="meta">No job started</div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button id="refreshBtn" class="btn ghost">Refresh products</button>
+          <button id="openApi" class="btn ghost" onclick="window.open('/docs','_blank')">Open API</button>
+        </div>
+      </div>
+
+      <hr style="margin:18px 0;border:0;border-top:1px solid #f5f5f5">
+
+      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-weight:700">Progress</div>
+          <div style="color:var(--muted);font-size:12px">Simulated worker. Real background worker recommended for production.</div>
+        </div>
+        <div class="status-pill" id="statusPill">Idle</div>
+      </div>
+    </aside>
+
+    <!-- Right: products -->
+    <main class="grid">
+      <section class="card">
+        <div class="row" style="margin-bottom:12px">
+          <div>
+            <div style="font-weight:700">Products</div>
+            <div style="font-size:13px;color:var(--muted)">Loaded from backend</div>
+          </div>
+          <div>
+            <button class="btn" id="btnNew" onclick="createSample()">Quick add</button>
+          </div>
+        </div>
+
+        <div style="overflow:auto;max-height:480px">
+          <table id="productTable" aria-live="polite" role="table">
+            <thead>
+              <tr><th>SKU</th><th>Name</th><th>Price</th><th>Stock</th></tr>
+            </thead>
+            <tbody id="plist">
+              <!-- rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" style="padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Webhook</div>
+            <div style="font-size:13px;color:var(--muted)">Register and test webhooks</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <input id="hookUrl" type="url" placeholder="https://example.com/hook" style="flex:1;padding:10px;border-radius:8px;border:1px solid #f0f0f0" />
+          <button class="btn ghost" id="regBtn">Register</button>
+          <button class="btn" id="testBtn">Test</button>
+        </div>
+
+        <div id="hookRes" style="margin-top:12px;color:var(--muted);font-size:13px"></div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Scoped demo · FastAPI backend endpoints expected at /upload-csv, /products, /progress/{id}
+  </footer>
+
+<script>
+  // Minimal client logic to integrate with the provided backend endpoints
+  const uploadBtn = document.getElementById('uploadBtn');
+  const fileInput = document.getElementById('file');
+  const bar = document.getElementById('bar');
+  const meta = document.getElementById('meta');
+  const statusPill = document.getElementById('statusPill');
+  const plist = document.getElementById('plist');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const regBtn = document.getElementById('regBtn');
+  const testBtn = document.getElementById('testBtn');
+  const hookUrl = document.getElementById('hookUrl');
+  let jobId = null;
+  const apiBase = '';
+
+  async function loadProducts(){
+    try{
+      const res = await fetch(apiBase + '/products');
+      const data = await res.json();
+      plist.innerHTML = data.map(p => `<tr><td>${escapeHtml(p.sku||'')}</td><td>${escapeHtml(p.name||'')}</td><td>${p.price}</td><td>${p.stock}</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;padding:14px">No products</td></tr>';
+    }catch(e){
+      plist.innerHTML = '<tr><td colspan="4" style="color:#999;padding:14px">Backend unreachable</td></tr>';
+    }
+  }
+
+  async function createSample(){
+    const sample = { sku: 'S' + Math.floor(Math.random()*9999), name: 'Sample', price: (Math.random()*9+1).toFixed(2), stock: Math.floor(Math.random()*50) };
+    await fetch(apiBase + '/products', { method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(sample) });
+    await loadProducts();
+  }
+
+  uploadBtn.addEventListener('click', async ()=>{
+    if (!fileInput.files.length) return alert('Choose a CSV file');
+    const fd = new FormData();
+    fd.append('file', fileInput.files[0]);
+    statusPill.innerText = 'Starting';
+    const res = await fetch(apiBase + '/upload-csv', { method:'POST', body: fd });
+    const j = await res.json();
+    jobId = j.job_id;
+    meta.innerText = 'Job: ' + jobId;
+    pollProgress();
+  });
+
+  async function pollProgress(){
+    if (!jobId) return;
+    try{
+      statusPill.innerText = 'Running';
+      const r = await fetch(apiBase + '/progress/' + jobId);
+      const j = await r.json();
+      const pct = j.progress || 0;
+      bar.style.width = pct + '%';
+      meta.innerText = `Job: ${jobId} — ${pct}%`;
+      if (pct < 100) setTimeout(pollProgress, 500);
+      else {
+        statusPill.innerText = 'Done';
+        await loadProducts();
+      }
+    }catch(e){
+      statusPill.innerText = 'Error';
+      meta.innerText = 'Progress fetch failed';
+    }
+  }
+
+  refreshBtn.addEventListener('click', loadProducts);
+  regBtn.addEventListener('click', async ()=>{
+    const url = hookUrl.value.trim();
+    if (!url) return alert('Enter URL');
+    const r = await fetch(apiBase + '/webhook/register?url=' + encodeURIComponent(url), { method:'POST' });
+    const j = await r.json();
+    document.getElementById('hookRes').innerText = JSON.stringify(j);
+  });
+  testBtn.addEventListener('click', async ()=>{
+    const url = hookUrl.value.trim();
+    if (!url) return alert('Enter URL');
+    const r = await fetch(apiBase + '/webhook/test?url=' + encodeURIComponent(url), { method:'POST' });
+    const j = await r.json();
+    document.getElementById('hookRes').innerText = JSON.stringify(j);
+  });
+
+  // small helper
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // load initial
+  loadProducts();
+</script>
+</body>
+</html>
