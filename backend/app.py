@@ -1,12 +1,15 @@
 from fastapi import FastAPI, UploadFile, Depends
-from database import Base, engine, SessionLocal
 from sqlalchemy.orm import Session
-from models import Product
-from schemas import ProductCreate, ProductOut
-from workers import start_import
+from backend.workers import start_import
 from utils.progress_store import get_progress
-from webhook import register_webhook, send_test_webhook
+from backend.webhook import register_webhook, send_test_webhook
 import uuid
+
+from backend.database import Base, engine, SessionLocal
+from backend.models import Product
+from backend.schemas import ProductCreate, ProductOut
+from backend.csv_importer import import_csv
+
 
 Base.metadata.create_all(bind=engine)
 
