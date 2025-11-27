@@ -16,6 +16,19 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Fulfil Assessment - Scoped Submission")
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*",  # or replace with "https://screenin.netlify.app" for more security
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 def get_db():
     db = SessionLocal()
     try:
