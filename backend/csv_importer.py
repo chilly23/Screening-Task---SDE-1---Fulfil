@@ -3,7 +3,7 @@ import csv
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 from backend.models import Product
-from utils.progress_store import set_progress
+from backend.utils.progress_store import set_progress
 
 def process_csv(job_id: str, file: UploadFile, db: Session):
     contents = file.file.read().decode().splitlines()
