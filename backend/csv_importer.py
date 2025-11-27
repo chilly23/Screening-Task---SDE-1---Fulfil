@@ -2,7 +2,7 @@ import time
 import csv
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
-from models import Product
+from backend.models import Product
 from utils.progress_store import set_progress
 
 def process_csv(job_id: str, file: UploadFile, db: Session):
