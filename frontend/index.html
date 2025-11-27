@@ -6,308 +6,406 @@
 <title>Importer — Monochrome</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --bg:#ffffff;
-    --panel:#ffffff;
-    --ink:#0b0b0b;
-    --muted:#6b6b6b;
-    --glass: rgba(11,11,11,0.06);
-    --accent:#000000;
-    --radius:12px;
-    --shadow: 0 6px 20px rgba(11,11,11,0.06);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    background:linear-gradient(180deg,#fafafa 0%, #ffffff 100%);
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    padding:28px;
-  }
+:root{
+  --panel:#ffffff;
+  --ink:#0b0b0b;
+  --muted:#6b6b6b;
+  --glass: rgba(11,11,11,0.06);
+  --accent:#000000;
+  --shadow: 0 6px 20px rgba(11,11,11,0.06);
+}
 
-  .container{
-    max-width:1100px;
-    margin:0 auto;
-    display:grid;
-    grid-template-columns: 420px 1fr;
-    gap:28px;
-    align-items:start;
-  }
+*{ box-sizing:border-box }
 
-  /* Left panel */
-  .card{
-    background:var(--panel);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:20px;
-    border:1px solid var(--glass);
-  }
-  h1{
-    margin:0 0 8px 0;
-    font-size:20px;
-    letter-spacing:-0.2px;
-  }
-  p.lead{margin:0 0 18px 0;color:var(--muted);font-size:13px}
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Inter,system-ui;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
 
-  .file-row{
-    display:flex;
-    gap:10px;
-    align-items:center;
-  }
-  input[type=file]{display:block}
-  .btn{
-    background:var(--accent);
-    color:#fff;
-    border:none;
-    padding:10px 14px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-    font-size:13px;
-  }
-  .btn.ghost{
-    background:transparent;
-    color:var(--ink);
-    border:1px solid var(--glass);
-  }
+/* VANTA TARGET */
+#bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
 
-  .progress{
-    margin-top:12px;
-    height:12px;
-    background:#f2f2f2;
-    border-radius:8px;
-    overflow:hidden;
-  }
-  .progress > i{
-    display:block;
-    height:100%;
-    width:0%;
-    background:var(--accent);
-    transition:width 260ms linear;
-  }
+/* Lift all UI above canvas */
+body > *:not(canvas) {
+  position: relative;
+  z-index: 2;
+}
 
-  .meta{font-size:12px;color:var(--muted);margin-top:8px}
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:28px;
+  display:grid;
+  grid-template-columns: 420px 1fr;
+  gap:28px;
+  align-items:start;
+}
 
-  /* Right area */
-  .grid{
-    display:grid;
-    grid-template-rows:auto auto;
-    gap:18px;
-  }
-  .row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
+.card{
+  background:var(--panel);
+  border-radius:6px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  border:1px solid var(--glass);
+}
 
-  table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:13px;
-  }
-  thead th{
-    text-align:left;
-    padding:10px 12px;
-    color:var(--muted);
-    font-weight:600;
-    font-size:12px;
-    border-bottom:1px solid #f0f0f0;
-  }
-  tbody td{
-    padding:10px 12px;
-    border-bottom:1px solid #fafafa;
-  }
+h1{ margin:0 0 8px 0;font-size:20px }
+p.lead{ margin:0 0 18px;color:var(--muted);font-size:13px }
 
-  .status-pill{
-    display:inline-block;
-    padding:6px 10px;
-    border-radius:999px;
-    font-weight:600;
-    font-size:12px;
-    background:#f5f5f5;
-    color:var(--muted);
-  }
+.file-row{ display:flex;gap:10px;align-items:center }
+input[type=file]{ display:block }
 
-  /* compact footer */
-  footer{margin-top:30px;color:var(--muted);font-size:12px;text-align:center}
+.btn{
+  background:var(--accent);
+  color:#fff;
+  padding:10px 14px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:600;
+}
 
-  /* responsive */
-  @media (max-width:880px){
-    .container{grid-template-columns:1fr; padding:18px}
-  }
+.btn.ghost{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--glass);
+}
+
+.btn:hover{
+  background:#f5f5f5;
+  color:#0b0b0b;
+  border:1px solid #0b0b0b;
+}
+
+.about-btn{
+  background:#ff4fa3;
+  color:#fff;
+  margin-top:14px;
+  margin-left:auto;
+  display:block;
+  font-size:12px;
+  border-radius:4px;
+}
+
+.about-btn:hover{
+  background:#ff77bb;
+}
+
+.progress{
+  margin-top:12px;
+  height:12px;
+  background:#f2f2f2;
+  border-radius:8px;
+  overflow:hidden;
+}
+.progress > i{
+  display:block;
+  width:0%;
+  height:100%;
+  background:var(--accent);
+  transition:width 260ms linear;
+}
+
+.meta{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+.grid{
+  display:grid;
+  grid-template-rows:auto auto;
+  gap:18px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+thead th{
+  padding:10px 12px;
+  color:var(--muted);
+  font-weight:600;
+  border-bottom:1px solid #eee;
+}
+tbody td{
+  padding:10px 12px;
+  border-bottom:1px solid #f5f5f5;
+}
+
+.status-pill{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#f5f5f5;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:600;
+}
+
+footer{
+  text-align:center;
+  margin-top:30px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* Modal */
+#aboutModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  backdrop-filter:blur(4px);
+  z-index:999;
+}
+
+.modal-card{
+  background:#fff;
+  width:300px;
+  border-radius:12px;
+  padding:22px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  animation:fadeIn .25s ease;
+}
+
+.modal-card h2{ margin-top:0;font-size:18px }
+.modal-card p{ margin:6px 0;font-size:14px }
+
+.close-modal{
+  margin-top:14px;
+  border:1px solid #ddd;
+  background:#fff;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+@keyframes fadeIn{
+  from{ opacity:0; transform:translateY(6px) }
+  to{ opacity:1; transform:translateY(0) }
+}
+
 </style>
 </head>
-<body>
-  <div class="container">
-    <!-- Left: controls -->
-    <aside class="card" aria-labelledby="title">
-      <h1 id="title">CSV Importer</h1>
-      <p class="lead">Upload SKU CSV. The worker runs in the background and reports progress. This is a scoped demo build for a coding assessment.</p>
 
+<body id="your-element-selector">
+<div id="bg"></div>
+
+<button class="btn about-btn" id="aboutBtn">About me</button>
+
+<div class="container">
+
+  <aside class="card">
+    <h1>CSV Importer</h1>
+    <p class="lead">Upload SKU CSV. Worker runs in the background and reports progress.</p>
+
+    <div>
+      <label style="font-size:12px;color:var(--muted)">Select CSV</label>
+      <div class="file-row">
+        <input id="file" type="file" accept=".csv">
+        <button id="uploadBtn" class="btn">Upload</button>
+      </div>
+
+      <div class="progress">
+        <i id="bar"></i>
+      </div>
+      <div id="meta" class="meta">No job started</div>
+
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button id="refreshBtn" class="btn ghost">Refresh</button>
+        <button class="btn ghost" onclick="window.open('/docs','_blank')">Open API</button>
+      </div>
+    </div>
+
+    <hr style="margin:18px 0;border:0;border-top:1px solid #eee">
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px">Select CSV</label>
-        <div class="file-row">
-          <input id="file" type="file" accept=".csv" />
-          <button id="uploadBtn" class="btn">Upload</button>
-        </div>
-
-        <div class="progress" aria-hidden="true" style="margin-top:16px">
-          <i id="bar" style="width:0%"></i>
-        </div>
-        <div class="meta" id="meta">No job started</div>
-        <div style="margin-top:14px;display:flex;gap:8px">
-          <button id="refreshBtn" class="btn ghost">Refresh products</button>
-          <button id="openApi" class="btn ghost" onclick="window.open('/docs','_blank')">Open API</button>
-        </div>
+        <div style="font-weight:700">Progress</div>
+        <div style="font-size:12px;color:var(--muted)">Simulated worker</div>
       </div>
+      <div id="statusPill" class="status-pill">Idle</div>
+    </div>
+  </aside>
 
-      <hr style="margin:18px 0;border:0;border-top:1px solid #f5f5f5">
-
-      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+  <main class="grid">
+    <section class="card">
+      <div class="row">
         <div>
-          <div style="font-weight:700">Progress</div>
-          <div style="color:var(--muted);font-size:12px">Simulated worker. Real background worker recommended for production.</div>
+          <div style="font-weight:700">Products</div>
+          <div style="font-size:12px;color:var(--muted)">Loaded from backend</div>
         </div>
-        <div class="status-pill" id="statusPill">Idle</div>
+        <button class="btn" onclick="createSample()">Quick add</button>
       </div>
-    </aside>
 
-    <!-- Right: products -->
-    <main class="grid">
-      <section class="card">
-        <div class="row" style="margin-bottom:12px">
-          <div>
-            <div style="font-weight:700">Products</div>
-            <div style="font-size:13px;color:var(--muted)">Loaded from backend</div>
-          </div>
-          <div>
-            <button class="btn" id="btnNew" onclick="createSample()">Quick add</button>
-          </div>
-        </div>
+      <div style="overflow:auto;max-height:480px">
+        <table>
+          <thead>
+            <tr><th>SKU</th><th>Name</th><th>Price</th><th>Stock</th></tr>
+          </thead>
+          <tbody id="plist"></tbody>
+        </table>
+      </div>
+    </section>
 
-        <div style="overflow:auto;max-height:480px">
-          <table id="productTable" aria-live="polite" role="table">
-            <thead>
-              <tr><th>SKU</th><th>Name</th><th>Price</th><th>Stock</th></tr>
-            </thead>
-            <tbody id="plist">
-              <!-- rows -->
-            </tbody>
-          </table>
-        </div>
-      </section>
+    <section class="card">
+      <div>
+        <div style="font-weight:700">Webhook</div>
+        <div style="font-size:12px;color:var(--muted)">Register & test</div>
+      </div>
 
-      <section class="card" style="padding:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:700">Webhook</div>
-            <div style="font-size:13px;color:var(--muted)">Register and test webhooks</div>
-          </div>
-        </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <input id="hookUrl" type="url" placeholder="https://example.com/hook"
+               style="flex:1;padding:10px;border-radius:8px;border:1px solid #eee">
+        <button id="regBtn" class="btn ghost">Register</button>
+        <button id="testBtn" class="btn">Test</button>
+      </div>
 
-        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-          <input id="hookUrl" type="url" placeholder="https://example.com/hook" style="flex:1;padding:10px;border-radius:8px;border:1px solid #f0f0f0" />
-          <button class="btn ghost" id="regBtn">Register</button>
-          <button class="btn" id="testBtn">Test</button>
-        </div>
+      <div id="hookRes" style="margin-top:12px;font-size:13px;color:var(--muted)"></div>
+    </section>
+  </main>
 
-        <div id="hookRes" style="margin-top:12px;color:var(--muted);font-size:13px"></div>
-      </section>
-    </main>
+</div>
+
+<footer>Scoped demo · FastAPI backend expected at /upload-csv /products /progress/{id}</footer>
+
+<!-- Modal -->
+<div id="aboutModal">
+  <div class="modal-card">
+    <h2>Author</h2>
+    <p><strong>Name:</strong> Velan E</p>
+    <p><strong>Email:</strong> velan929@gmail.com</p>
+    <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/velan-e" target="_blank">linkedin.com/in/velan-e</a></p>
+    <p><strong>GitHub:</strong> <a href="https://github.com/chilly23" target="_blank">github.com/chilly23</a></p>
+    <button id="closeAbout" class="close-modal">Close</button>
   </div>
-
-  <footer>
-    Scoped demo · FastAPI backend endpoints expected at /upload-csv, /products, /progress/{id}
-  </footer>
+</div>
 
 <script>
-  // Minimal client logic to integrate with the provided backend endpoints
-  const uploadBtn = document.getElementById('uploadBtn');
-  const fileInput = document.getElementById('file');
-  const bar = document.getElementById('bar');
-  const meta = document.getElementById('meta');
-  const statusPill = document.getElementById('statusPill');
-  const plist = document.getElementById('plist');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const regBtn = document.getElementById('regBtn');
-  const testBtn = document.getElementById('testBtn');
-  const hookUrl = document.getElementById('hookUrl');
-  let jobId = null;
-  const apiBase = '';
+const apiBase = "https://screening-task-sde-1-fulfil-7.onrender.com";
 
-  async function loadProducts(){
-    try{
-      const res = await fetch(apiBase + '/products');
-      const data = await res.json();
-      plist.innerHTML = data.map(p => `<tr><td>${escapeHtml(p.sku||'')}</td><td>${escapeHtml(p.name||'')}</td><td>${p.price}</td><td>${p.stock}</td></tr>`).join('') || '<tr><td colspan="4" style="color:#999;padding:14px">No products</td></tr>';
-    }catch(e){
-      plist.innerHTML = '<tr><td colspan="4" style="color:#999;padding:14px">Backend unreachable</td></tr>';
-    }
+const uploadBtn = document.getElementById("uploadBtn");
+const fileInput = document.getElementById("file");
+const bar = document.getElementById("bar");
+const meta = document.getElementById("meta");
+const plist = document.getElementById("plist");
+const statusPill = document.getElementById("statusPill");
+
+let jobId = null;
+
+async function loadProducts(){
+  try{
+    const res = await fetch(apiBase + "/products");
+    const data = await res.json();
+    plist.innerHTML =
+      data.map(p => `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.price}</td><td>${p.stock}</td></tr>`).join("") 
+      || `<tr><td colspan="4" style="padding:14px;color:#999">No products</td></tr>`;
+  }catch{
+    plist.innerHTML = `<tr><td colspan="4" style="padding:14px;color:#999">Backend unreachable</td></tr>`;
   }
+}
 
-  async function createSample(){
-    const sample = { sku: 'S' + Math.floor(Math.random()*9999), name: 'Sample', price: (Math.random()*9+1).toFixed(2), stock: Math.floor(Math.random()*50) };
-    await fetch(apiBase + '/products', { method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(sample) });
-    await loadProducts();
-  }
+uploadBtn.onclick = async () => {
+  if(!fileInput.files.length) return alert("Choose a CSV file");
 
-  uploadBtn.addEventListener('click', async ()=>{
-    if (!fileInput.files.length) return alert('Choose a CSV file');
-    const fd = new FormData();
-    fd.append('file', fileInput.files[0]);
-    statusPill.innerText = 'Starting';
-    const res = await fetch(apiBase + '/upload-csv', { method:'POST', body: fd });
-    const j = await res.json();
-    jobId = j.job_id;
-    meta.innerText = 'Job: ' + jobId;
-    pollProgress();
-  });
+  const fd = new FormData();
+  fd.append("file", fileInput.files[0]);
 
-  async function pollProgress(){
-    if (!jobId) return;
-    try{
-      statusPill.innerText = 'Running';
-      const r = await fetch(apiBase + '/progress/' + jobId);
-      const j = await r.json();
-      const pct = j.progress || 0;
-      bar.style.width = pct + '%';
-      meta.innerText = `Job: ${jobId} — ${pct}%`;
-      if (pct < 100) setTimeout(pollProgress, 500);
-      else {
-        statusPill.innerText = 'Done';
-        await loadProducts();
-      }
-    }catch(e){
-      statusPill.innerText = 'Error';
-      meta.innerText = 'Progress fetch failed';
-    }
-  }
+  statusPill.innerText = "Starting";
 
-  refreshBtn.addEventListener('click', loadProducts);
-  regBtn.addEventListener('click', async ()=>{
-    const url = hookUrl.value.trim();
-    if (!url) return alert('Enter URL');
-    const r = await fetch(apiBase + '/webhook/register?url=' + encodeURIComponent(url), { method:'POST' });
+  const res = await fetch(apiBase + "/upload-csv", { method:"POST", body:fd });
+  const j = await res.json();
+
+  jobId = j.job_id;
+  meta.innerText = "Job: " + jobId;
+
+  pollProgress();
+};
+
+async function pollProgress(){
+  if(!jobId) return;
+
+  try{
+    const r = await fetch(apiBase + "/progress/" + jobId);
     const j = await r.json();
-    document.getElementById('hookRes').innerText = JSON.stringify(j);
-  });
-  testBtn.addEventListener('click', async ()=>{
-    const url = hookUrl.value.trim();
-    if (!url) return alert('Enter URL');
-    const r = await fetch(apiBase + '/webhook/test?url=' + encodeURIComponent(url), { method:'POST' });
-    const j = await r.json();
-    document.getElementById('hookRes').innerText = JSON.stringify(j);
-  });
+    const pct = j.progress || 0;
 
-  // small helper
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    bar.style.width = pct + "%";
+    meta.innerText = `Job: ${jobId} — ${pct}%`;
+    statusPill.innerText = "Running";
 
-  // load initial
-  loadProducts();
+    if(pct < 100) setTimeout(pollProgress, 500);
+    else{
+      statusPill.innerText = "Done";
+      loadProducts();
+    }
+  }catch{
+    statusPill.innerText = "Error";
+    meta.innerText = "Progress error";
+  }
+}
+
+document.getElementById("refreshBtn").onclick = loadProducts;
+
+document.getElementById("regBtn").onclick = async () => {
+  const url = hookUrl.value.trim();
+  if(!url) return alert("Enter URL");
+  const r = await fetch(apiBase + "/webhook/register?url=" + encodeURIComponent(url), { method:"POST" });
+  hookRes.innerText = JSON.stringify(await r.json());
+};
+
+document.getElementById("testBtn").onclick = async () => {
+  const url = hookUrl.value.trim();
+  if(!url) return alert("Enter URL");
+  const r = await fetch(apiBase + "/webhook/test?url=" + encodeURIComponent(url), { method:"POST" });
+  hookRes.innerText = JSON.stringify(await r.json());
+};
+
+loadProducts();
+
+/* Modal */
+aboutBtn.onclick = () => aboutModal.style.display = "flex";
+closeAbout.onclick = () => aboutModal.style.display = "none";
+aboutModal.onclick = e => { if(e.target === aboutModal) aboutModal.style.display = "none" };
 </script>
+
+<script src="three.r134.min.js"></script>
+<script src="vanta.fog.min.js"></script>
+<script>
+VANTA.FOG({
+  el: "#bg",
+  mouseControls: true,
+  touchControls: true,
+  gyroControls: false,
+  minHeight: 200,
+  minWidth: 200,
+  highlightColor: 0xff00d8
+});
+</script>
+
 </body>
 </html>
