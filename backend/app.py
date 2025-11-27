@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, Depends
 from sqlalchemy.orm import Session
 from backend.workers import start_import
-from utils.progress_store import get_progress
+from backend.utils.progress_store import get_progress
 from backend.webhook import register_webhook, send_test_webhook
 import uuid
 
