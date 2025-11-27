@@ -17,24 +17,24 @@ The goal is to demonstrate:
 
 ## Features Included (Scoped)
 
-### ✔ Product API
+### Product API
 - CRUD (create + list included)
 - SKU uniqueness
 - Database persistence via SQLAlchemy
 
-### ✔ CSV Import Pipeline
+### CSV Import Pipeline
 - Async-simulated background job (thread)
 - Upsert by SKU
 - Progress tracked per job
 - Frontend UI for upload + progress
 
-### ✔ Webhook Manager
+### Webhook Manager
 - Register webhook URLs
 - Trigger test webhook (mock delivery)
 
-### ✔ Frontend (Minimal)
+### Frontend (Minimal)
 - CSV uploader
 - Real-time progress polling
 - Product viewer
 
-### ✔ Clean Architecture
+### Clean Architecture
