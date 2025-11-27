@@ -8,7 +8,7 @@ import uuid
 from backend.database import Base, engine, SessionLocal
 from backend.models import Product
 from backend.schemas import ProductCreate, ProductOut
-from backend.csv_importer import import_csv
+from csv_importer import import_csv
 
 
 Base.metadata.create_all(bind=engine)
