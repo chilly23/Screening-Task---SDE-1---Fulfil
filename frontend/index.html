@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Importer — Monochrome</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>Importer Monochrome</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -24,10 +24,10 @@ html,body{
   margin:0;
   font-family:Inter,system-ui;
   color:var(--ink);
-  -webkit-font-smoothing:antialiased;
+  background:transparent;
 }
 
-/* VANTA TARGET */
+/* background canvas */
 #bg {
   position: fixed;
   top: 0;
@@ -37,7 +37,7 @@ html,body{
   z-index: -1;
 }
 
-/* Lift all UI above canvas */
+/* UI above canvas */
 body > *:not(canvas) {
   position: relative;
   z-index: 2;
@@ -61,7 +61,7 @@ body > *:not(canvas) {
   border:1px solid var(--glass);
 }
 
-h1{ margin:0 0 8px 0;font-size:20px }
+h1{ margin:0 0 8px 0;font-size:20px;font-weight:700 }
 p.lead{ margin:0 0 18px;color:var(--muted);font-size:13px }
 
 .file-row{ display:flex;gap:10px;align-items:center }
@@ -93,11 +93,12 @@ input[type=file]{ display:block }
 .about-btn{
   background:#ff4fa3;
   color:#fff;
-  margin-top:14px;
+  padding:8px 12px;
+  border-radius:6px;
   margin-left:auto;
   display:block;
+  margin-top:20px;
   font-size:12px;
-  border-radius:4px;
 }
 
 .about-btn:hover{
@@ -112,18 +113,13 @@ input[type=file]{ display:block }
   overflow:hidden;
 }
 .progress > i{
-  display:block;
-  width:0%;
   height:100%;
+  width:0%;
   background:var(--accent);
   transition:width 260ms linear;
 }
 
-.meta{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:8px;
-}
+.meta{ font-size:12px;color:var(--muted);margin-top:8px }
 
 .grid{
   display:grid;
@@ -142,6 +138,7 @@ table{
   border-collapse:collapse;
   font-size:13px;
 }
+
 thead th{
   padding:10px 12px;
   color:var(--muted);
@@ -154,7 +151,6 @@ tbody td{
 }
 
 .status-pill{
-  display:inline-block;
   padding:6px 10px;
   border-radius:999px;
   background:#f5f5f5;
@@ -170,7 +166,7 @@ footer{
   font-size:12px;
 }
 
-/* Modal */
+/* modal */
 #aboutModal{
   position:fixed;
   inset:0;
@@ -191,28 +187,34 @@ footer{
   animation:fadeIn .25s ease;
 }
 
-.modal-card h2{ margin-top:0;font-size:18px }
-.modal-card p{ margin:6px 0;font-size:14px }
+.modal-card h2{
+  margin:0 0 10px;
+  font-size:18px;
+}
+
+.modal-card p{
+  margin:4px 0;
+  font-size:14px;
+}
 
 .close-modal{
   margin-top:14px;
-  border:1px solid #ddd;
-  background:#fff;
   padding:6px 12px;
+  background:#fff;
+  border:1px solid #ddd;
   border-radius:8px;
   cursor:pointer;
-  font-size:12px;
 }
 
 @keyframes fadeIn{
   from{ opacity:0; transform:translateY(6px) }
   to{ opacity:1; transform:translateY(0) }
 }
-
 </style>
 </head>
 
-<body id="your-element-selector">
+
+<body>
 <div id="bg"></div>
 
 <button class="btn about-btn" id="aboutBtn">About me</button>
@@ -221,7 +223,7 @@ footer{
 
   <aside class="card">
     <h1>CSV Importer</h1>
-    <p class="lead">Upload SKU CSV. Worker runs in the background and reports progress.</p>
+    <p class="lead">Upload SKU CSV and view progress visually.</p>
 
     <div>
       <label style="font-size:12px;color:var(--muted)">Select CSV</label>
@@ -230,10 +232,8 @@ footer{
         <button id="uploadBtn" class="btn">Upload</button>
       </div>
 
-      <div class="progress">
-        <i id="bar"></i>
-      </div>
-      <div id="meta" class="meta">No job started</div>
+      <div class="progress"><i id="bar"></i></div>
+      <div class="meta" id="meta">No job started</div>
 
       <div style="margin-top:14px;display:flex;gap:8px">
         <button id="refreshBtn" class="btn ghost">Refresh</button>
@@ -265,7 +265,9 @@ footer{
       <div style="overflow:auto;max-height:480px">
         <table>
           <thead>
-            <tr><th>SKU</th><th>Name</th><th>Price</th><th>Stock</th></tr>
+            <tr>
+              <th>SKU</th><th>Name</th><th>Price</th><th>Stock</th>
+            </tr>
           </thead>
           <tbody id="plist"></tbody>
         </table>
@@ -275,7 +277,7 @@ footer{
     <section class="card">
       <div>
         <div style="font-weight:700">Webhook</div>
-        <div style="font-size:12px;color:var(--muted)">Register & test</div>
+        <div style="font-size:12px;color:var(--muted)">Register and test</div>
       </div>
 
       <div style="margin-top:12px;display:flex;gap:8px">
@@ -287,18 +289,19 @@ footer{
 
       <div id="hookRes" style="margin-top:12px;font-size:13px;color:var(--muted)"></div>
     </section>
+
   </main>
 
 </div>
 
-<footer>Scoped demo · FastAPI backend expected at /upload-csv /products /progress/{id}</footer>
+<footer>Scoped demo using FastAPI backend</footer>
 
 <!-- Modal -->
 <div id="aboutModal">
   <div class="modal-card">
     <h2>Author</h2>
-    <p><strong>Name:</strong> Velan E</p>
-    <p><strong>Email:</strong> velan929@gmail.com</p>
+    <p><strong>Name:</strong> Velan</p>
+    <p><strong>Email:</strong> velanvelu21@gmail.com</p>
     <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/velan-e" target="_blank">linkedin.com/in/velan-e</a></p>
     <p><strong>GitHub:</strong> <a href="https://github.com/chilly23" target="_blank">github.com/chilly23</a></p>
     <button id="closeAbout" class="close-modal">Close</button>
@@ -321,16 +324,16 @@ async function loadProducts(){
   try{
     const res = await fetch(apiBase + "/products");
     const data = await res.json();
-    plist.innerHTML =
-      data.map(p => `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.price}</td><td>${p.stock}</td></tr>`).join("") 
-      || `<tr><td colspan="4" style="padding:14px;color:#999">No products</td></tr>`;
+    plist.innerHTML = data.length
+      ? data.map(p => `<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.price}</td><td>${p.stock}</td></tr>`).join("")
+      : `<tr><td colspan="4" style="padding:14px;color:#999">No products</td></tr>`;
   }catch{
     plist.innerHTML = `<tr><td colspan="4" style="padding:14px;color:#999">Backend unreachable</td></tr>`;
   }
 }
 
 uploadBtn.onclick = async () => {
-  if(!fileInput.files.length) return alert("Choose a CSV file");
+  if(!fileInput.files.length) return alert("Choose a CSV");
 
   const fd = new FormData();
   fd.append("file", fileInput.files[0]);
@@ -341,7 +344,7 @@ uploadBtn.onclick = async () => {
   const j = await res.json();
 
   jobId = j.job_id;
-  meta.innerText = "Job: " + jobId;
+  meta.innerText = "Job " + jobId;
 
   pollProgress();
 };
@@ -355,8 +358,8 @@ async function pollProgress(){
     const pct = j.progress || 0;
 
     bar.style.width = pct + "%";
-    meta.innerText = `Job: ${jobId} — ${pct}%`;
     statusPill.innerText = "Running";
+    meta.innerText = "Job " + jobId + " " + pct + "%";
 
     if(pct < 100) setTimeout(pollProgress, 500);
     else{
@@ -365,7 +368,6 @@ async function pollProgress(){
     }
   }catch{
     statusPill.innerText = "Error";
-    meta.innerText = "Progress error";
   }
 }
 
@@ -387,20 +389,22 @@ document.getElementById("testBtn").onclick = async () => {
 
 loadProducts();
 
-/* Modal */
+/* modal */
 aboutBtn.onclick = () => aboutModal.style.display = "flex";
 closeAbout.onclick = () => aboutModal.style.display = "none";
 aboutModal.onclick = e => { if(e.target === aboutModal) aboutModal.style.display = "none" };
 </script>
 
-<script src="three.r134.min.js"></script>
-<script src="vanta.fog.min.js"></script>
+<!-- working CDN versions -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+
 <script>
 VANTA.FOG({
   el: "#bg",
   mouseControls: true,
   touchControls: true,
-  gyroControls: false,
+  gyroControls: true,
   minHeight: 200,
   minWidth: 200,
   highlightColor: 0xff00d8
