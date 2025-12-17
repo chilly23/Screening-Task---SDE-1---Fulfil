@@ -413,5 +413,28 @@ VANTA.FOG({
 });
 </script>
 
+  <script>
+async function createSample() {
+  const res = await fetch(apiBase + "/products", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      sku: "SKU-" + Math.floor(Math.random() * 10000),
+      name: "Sample Product",
+      price: 99.99,
+      stock: 10
+    })
+  });
+
+  if (!res.ok) {
+    alert("Failed to create product");
+    return;
+  }
+
+  loadProducts();
+}
+</script>
+
+
 </body>
 </html>
